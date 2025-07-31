@@ -1,0 +1,69 @@
+# CMake build artifacts
+build/
+bin/
+lib/
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+Testing/
+_CPack_Packages/
+
+# IDE specific files (e.g., Visual Studio, CLion, VS Code)
+.idea/
+.vscode/
+*.sln
+*.suo
+*.user
+*.vcxproj*
+*.filters
+*.vcproj
+*.ncb
+*.aps
+*.bsc
+*.sbr
+*.obj
+*.o
+*.pdb
+*.ilk
+*.ipch
+*.log
+*.tlog
+*.lastbuildstate
+*.opensdf
+*.sdf
+*.vshost.*
+*.vspscc
+*.vssscc
+*.bak
+*.swp
+*.tmp
+
+# Operating system specific files
+.DS_Store
+Thumbs.db
+
+# Dependency management (e.g., Conan, vcpkg)
+conan_deps/
+vcpkg_installed/
+
+# Test reports/artifacts
+test_results/
+coverage_report/
+
+# Generated documentation
+docs/html/
+docs/latex/
+
+# Other temporary or configuration files
+*.swp
+*.bak
+*.tmp
+*.log
+compile_commands.json
