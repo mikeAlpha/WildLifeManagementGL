@@ -28,9 +28,12 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader shader("../../shaders/vertex.glsl", "../../shaders/fragment.glsl");
+    //Shader shader("../../shaders/vertex.glsl", "../../shaders/fragment.glsl");
 
-    Shader lightShader("../../shaders/emitv.glsl", "../../shaders/emitf.glsl");
+    Shader shader("D:\\GameDev\\WildLifeGameGL\\shaders\\vertex.glsl", "D:\\GameDev\\WildLifeGameGL\\shaders\\fragment.glsl");
+
+    //Shader lightShader("../../shaders/emitv.glsl", "../../shaders/emitf.glsl");
+    Shader lightShader("D:\\GameDev\\WildLifeGameGL\\shaders\\emitv.glsl", "D:\\GameDev\\WildLifeGameGL\\shaders\\emitf.glsl");
 
     float cubeVertices[] = {
         // positions          // normals
@@ -151,7 +154,7 @@ int main() {
         glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
         bool isPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-        /*if (isPressed) {
+        if (isPressed) {
             glm::vec3 ray = CheckMouseSelection(window, projection, view);
             
             glm::vec3 movedMin = cubePosition + cubeMin;
@@ -164,7 +167,7 @@ int main() {
             }
             else
                 IsObjectSelected = false;
-        }*/
+        }
         model = glm::translate(glm::mat4(1.0f), cubePosition);
         model = glm::rotate(model, time, glm::vec3(1, 1, 0.5f));
 

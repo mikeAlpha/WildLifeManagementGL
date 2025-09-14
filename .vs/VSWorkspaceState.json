@@ -6,7 +6,9 @@
     ]
   },
   "ExpandedNodes": [
-    ""
+    "",
+    "\\shaders",
+    "\\src"
   ],
   "PreviewInSolutionExplorer": false
 }
