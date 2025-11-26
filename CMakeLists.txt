@@ -39,7 +39,7 @@ libs/glm/glm-master
 )
 
 # Source files
-file(GLOB SRC_FILES src/*.cpp)
+file(GLOB SRC_FILES src/*.cpp src/Base/*.cpp)
 
 add_executable(WildLifeGameGL ${SRC_FILES})
 target_link_libraries(WildLifeGameGL imgui glad glfw ${OPENGL_gl_LIBRARY})
