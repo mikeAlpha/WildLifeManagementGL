@@ -1,6 +1,7 @@
 # CMake build artifacts
 build/
 bin/
+libs/
 lib/
 *.a
 *.so
