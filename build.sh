@@ -10,7 +10,7 @@ cmake -G "MinGW Makefiles" \
   -DCMAKE_C_COMPILER="${MINGW_PATH}/gcc.exe" \
   -DCMAKE_CXX_COMPILER="${MINGW_PATH}/g++.exe" \
   -DCMAKE_MAKE_PROGRAM="${MINGW_PATH}/mingw32-make.exe" \
+  -DCMAKE_BUILD_TYPE=Release \
   ..
-
-# Build the project
+  
 "${MINGW_PATH}/mingw32-make.exe" -j$(nproc)
