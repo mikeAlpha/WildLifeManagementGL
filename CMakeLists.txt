@@ -45,7 +45,7 @@
 # target_link_libraries(WildLifeGameGL imgui glad glfw ${OPENGL_gl_LIBRARY})
 
 cmake_minimum_required(VERSION 3.10)
-project(WildLifeGameGL CXX)
+project(WildLifeGameGL C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

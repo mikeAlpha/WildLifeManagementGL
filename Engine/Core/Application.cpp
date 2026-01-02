@@ -18,15 +18,15 @@ void Application::Run()
 {
     std::cout << "[Application] Run\n";
 
-    while (m_Running)
+    while (!m_Window->IsWindowClosed())
     {
         m_Window->PollEvents();
 
         for (auto& layer : m_Layers)
             layer->OnUpdate(Time::DeltaTime);
 
-        Renderer::BeginFrame();
-        Renderer::EndFrame();
+        // Renderer::BeginFrame();
+        // Renderer::EndFrame();
 
         m_Window->SwapBuffers();
 

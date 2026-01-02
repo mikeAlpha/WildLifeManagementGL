@@ -9,6 +9,7 @@ public:
 
     void PollEvents();
     void SwapBuffers();
+    bool IsWindowClosed();
 
 private:
     int m_Width;
