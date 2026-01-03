@@ -9,12 +9,16 @@ class Mesh;
 class Shader;
 class Scene;
 class SceneObject;
+class ModelLoader;
 
 class GameLayer : public Layer
 {
 private:
+    std::unique_ptr<ModelLoader> testObj;
     std::unique_ptr<Mesh> cubeMesh;
+    std::unique_ptr<Mesh> lightMesh;
     std::unique_ptr<Shader> defaultShader;
+    std::unique_ptr<Shader> lightShader;
     std::unique_ptr<Scene> mScene;
 
     glm::vec3 cubeMin = glm::vec3(-0.5f, -0.5f, -0.5f);

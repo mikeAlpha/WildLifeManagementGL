@@ -1,4 +1,5 @@
 file(GLOB_RECURSE ENGINE_SOURCES
+    Assets/*.cpp
     Core/*.cpp
     Platform/*.cpp
     Renderer/*.cpp
@@ -6,6 +7,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
 )
 
 file(GLOB_RECURSE ENGINE_HEADERS
+    Assets/*.h
     Core/*.h
     Platform/*.h
     Renderer/*.h
@@ -18,6 +20,7 @@ set(IMGUI_DIR libs/imgui)
 set(GLAD libs/glad)
 set(GLM libs/glm)
 set(GLFW libs/glfw)
+set(ASSIMP libs/assimp)
 
 add_library(Engine STATIC 
                 ${ENGINE_SOURCES}
@@ -37,8 +40,20 @@ target_include_directories(Engine PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}
             ${IMGUI_DIR}
             ${IMGUI_DIR}/backends
+            ${ASSIMP}
+            ${ASSIMP}/include
             ${GLFW}
             ${GLFW}/include
             ${GLAD}/include
             ${GLM}/glm-master
+)
+
+add_subdirectory(${GLFW})
+add_subdirectory(${ASSIMP})
+
+target_link_libraries(Engine
+    PUBLIC
+        assimp
+        glfw
+        OpenGL::GL
 )

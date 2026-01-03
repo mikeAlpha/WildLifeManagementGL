@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "ModelLoader.h"
 
 #include <glad/glad.h>
 
@@ -15,14 +16,13 @@ void Renderer::Init()
 
 void Renderer::BeginFrame(const glm::mat4& proj,const glm::mat4& view)
 {
-    std::cout << "[Renderer] BeginFrame\n";
     s_Projection = proj;
     s_View = view;
 }
 
 void Renderer::EndFrame()
 {
-    std::cout << "[Renderer] EndFrame\n";
+
 }
 
 void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4& transform)
@@ -34,8 +34,27 @@ void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4&
         shader.SetMatrix("view", s_View);
         shader.SetMatrix("projection", s_Projection);
         shader.SetMatrix("model", transform);
+
+        //shader.SetVector3("objectColor", 0.8, 0.1f, 0.0f);
         
         // shader.SetMat4("u_MVP", mvp);
 
-        mesh.Draw();
+        mesh.Draw(shader);
+}
+
+void Renderer::DrawModel(const ModelLoader& model, const Shader& shader, const glm::mat4& transform)
+{
+// shader.Bind();
+        shader.use();
+
+        // glm::mat4 mvp = s_ViewProjection * transform;
+        shader.SetMatrix("view", s_View);
+        shader.SetMatrix("projection", s_Projection);
+        shader.SetMatrix("model", transform);
+
+        //shader.SetVector3("objectColor", 0.8, 0.1f, 0.0f);
+        
+        // shader.SetMat4("u_MVP", mvp);
+
+        model.Draw(shader);
 }

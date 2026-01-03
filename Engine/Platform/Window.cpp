@@ -28,10 +28,10 @@ bool Window::IsWindowClosed()
 
 void Window::PollEvents()
 {
-    std::cout << "[Window] PollEvents\n";
+    glfwPollEvents();
 }
 
 void Window::SwapBuffers()
 {
-    std::cout << "[Window] SwapBuffers\n";
+    glfwSwapBuffers(window);
 }

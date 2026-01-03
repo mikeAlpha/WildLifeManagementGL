@@ -32,10 +32,15 @@ public:
             auto* transform = obj->GetComponent<TransformComponent>();
             auto* render    = obj->GetComponent<RenderComponent>();
 
-            if (transform && render && render->MeshPtr && render->ShaderPtr)
+            if (transform && render && render->ModelPtr && render->ShaderPtr)
             {
-                Renderer::DrawMesh(
-                    *render->MeshPtr,
+                // Renderer::DrawMesh(
+                //     *render->MeshPtr,
+                //     *render->ShaderPtr,
+                //     transform->GetTransform()
+                // );
+                Renderer::DrawModel(
+                    *render->ModelPtr,
                     *render->ShaderPtr,
                     transform->GetTransform()
                 );
@@ -43,6 +48,16 @@ public:
         }
 
         Renderer::EndFrame();
+    }
+
+    std::vector<std::unique_ptr<SceneObject>>& GetObjects()
+    {
+        return m_Objects;
+    }
+
+    const std::vector<std::unique_ptr<SceneObject>>& GetObjects() const
+    {
+        return m_Objects;
     }
 
 private:
