@@ -32,13 +32,16 @@ public:
             auto* transform = obj->GetComponent<TransformComponent>();
             auto* render    = obj->GetComponent<RenderComponent>();
 
+            if (transform && render && render->MeshPtr && render->ShaderPtr)
+            {
+                Renderer::DrawMesh(
+                    *render->MeshPtr,
+                    *render->ShaderPtr,
+                    transform->GetTransform()
+                );
+            }
             if (transform && render && render->ModelPtr && render->ShaderPtr)
             {
-                // Renderer::DrawMesh(
-                //     *render->MeshPtr,
-                //     *render->ShaderPtr,
-                //     transform->GetTransform()
-                // );
                 Renderer::DrawModel(
                     *render->ModelPtr,
                     *render->ShaderPtr,

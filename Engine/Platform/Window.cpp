@@ -1,9 +1,13 @@
 #include "Window.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Core/Input.h"
 
 GLFWwindow* window;
 
+static void CursorPosCallback(GLFWwindow*, double xpos, double ypos);
+static void KeyCallback(GLFWwindow*, int key, int, int action, int);
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 Window::Window(int width, int height, const std::string& title)
     : m_Width(width), m_Height(height), m_Title(title)
@@ -17,7 +21,10 @@ Window::Window(int width, int height, const std::string& title)
 
     window = glfwCreateWindow(1280, 720, "Ecosystem 3D", NULL, NULL);
     glfwMakeContextCurrent(window);
-    //glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, KeyCallback);
+    glfwSetCursorPosCallback(window, CursorPosCallback);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 }
 
@@ -34,4 +41,38 @@ void Window::PollEvents()
 void Window::SwapBuffers()
 {
     glfwSwapBuffers(window);
+}
+
+static void KeyCallback(GLFWwindow*, int key, int, int action, int)
+{
+    if (action == GLFW_PRESS)
+        Input::SetKey(key, true);
+    else if (action == GLFW_RELEASE)
+        Input::SetKey(key, false);
+}
+
+static void CursorPosCallback(GLFWwindow*, double xpos, double ypos)
+{
+    static bool first = true;
+    static double lastX = 0.0, lastY = 0.0;
+
+    if (first)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        first = false;
+    }
+
+    Input::AddMouseDelta(
+        static_cast<float>(xpos - lastX),
+        static_cast<float>(lastY - ypos)
+    );
+
+    lastX = xpos;
+    lastY = ypos;
+}
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
 }

@@ -26,7 +26,6 @@ Mesh::Mesh(float* vertices, unsigned int vertexCount, unsigned int* indices, uns
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
-
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
@@ -61,15 +60,19 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
     glBindVertexArray(0);
 }
 
-Mesh::~Mesh() {
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    glDeleteVertexArrays(1, &VAO);
+void Mesh::Destroy() {
+    if (VBO) glDeleteBuffers(1, &VBO);
+    if (EBO) glDeleteBuffers(1, &EBO);
+    if (VAO) glDeleteVertexArrays(1, &VAO);
+
+    VBO = 0;
+    EBO = 0;
+    VAO = 0;
 }
 
 void Mesh::Draw() const {
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 }
 
 void Mesh::Draw(const Shader &shader) const{
@@ -100,6 +103,3 @@ void Mesh::Draw(const Shader &shader) const{
 
         glActiveTexture(GL_TEXTURE0);
 }
-
-
-

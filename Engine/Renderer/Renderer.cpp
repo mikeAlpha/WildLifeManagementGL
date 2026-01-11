@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Shader.h"
+#define STB_IMAGE_IMPLEMENTATION
 #include "ModelLoader.h"
 
 #include <glad/glad.h>
@@ -27,6 +28,22 @@ void Renderer::EndFrame()
 
 void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4& transform)
 {
+        //shader.Bind();
+        shader.use();
+
+        //glm::mat4 mvp = s_ViewProjection * transform;
+        shader.SetMatrix("view", s_View);
+        shader.SetMatrix("projection", s_Projection);
+        shader.SetMatrix("model", transform);
+
+        //shader.SetVector3("objectColor", 0.8, 0.1f, 0.0f);
+        
+        //shader.SetMat4("u_MVP", mvp);
+        mesh.Draw();
+}
+
+void Renderer::DrawModel(const ModelLoader& model, const Shader& shader, const glm::mat4& transform)
+{
         // shader.Bind();
         shader.use();
 
@@ -37,24 +54,7 @@ void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4&
 
         //shader.SetVector3("objectColor", 0.8, 0.1f, 0.0f);
         
-        // shader.SetMat4("u_MVP", mvp);
-
-        mesh.Draw(shader);
-}
-
-void Renderer::DrawModel(const ModelLoader& model, const Shader& shader, const glm::mat4& transform)
-{
-// shader.Bind();
-        shader.use();
-
-        // glm::mat4 mvp = s_ViewProjection * transform;
-        shader.SetMatrix("view", s_View);
-        shader.SetMatrix("projection", s_Projection);
-        shader.SetMatrix("model", transform);
-
-        //shader.SetVector3("objectColor", 0.8, 0.1f, 0.0f);
-        
-        // shader.SetMat4("u_MVP", mvp);
+        //shader.SetMat4("u_MVP", mvp);
 
         model.Draw(shader);
 }

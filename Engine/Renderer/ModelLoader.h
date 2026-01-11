@@ -6,7 +6,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include <contrib/stb/stb_image.h>
 
 #include "Mesh.h"
@@ -34,6 +33,23 @@ public:
         loadModel(path);
     }
 
+    ~ModelLoader()
+    {
+        Destroy();
+    }
+
+    void Destroy()
+    {
+        for (auto& mesh : meshes)
+            mesh.Destroy();
+        
+        for (auto& tex : textures_loaded)
+            glDeleteTextures(1, &tex.id);
+            
+        meshes.clear();
+        textures_loaded.clear();
+    }
+
     void Draw(const Shader &shader) const
     {
         for(unsigned int i = 0; i < meshes.size(); i++)
@@ -43,6 +59,8 @@ public:
 private:
     void loadModel(string const &path)
     {
+        stbi_set_flip_vertically_on_load(true);
+
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
@@ -52,7 +70,11 @@ private:
             return;
         }
 
-        directory = path.substr(0, path.find_last_of('/'));
+        size_t lastSlash = path.find_last_of("/\\");
+        if (lastSlash != std::string::npos)
+            directory = path.substr(0, lastSlash);
+        else
+            directory = "";
 
         processNode(scene->mRootNode, scene);
     }
@@ -164,6 +186,7 @@ private:
             if(!skip)
             {   
                 Texture texture;
+                printf("Loading texture: %s\n", str.C_Str());
                 texture.id = TextureFromFile(str.C_Str(), this->directory,false);
                 texture.type = typeName;
                 texture.path = str.C_Str();
@@ -177,7 +200,8 @@ private:
     unsigned int TextureFromFile(const char *path, const string &directory, bool gamma)
     {
         string filename = string(path);
-        filename = directory + '/' + filename;
+        if (!directory.empty())
+            filename = directory + '/' + filename;
 
         unsigned int textureID;
         glGenTextures(1, &textureID);
@@ -207,7 +231,7 @@ private:
         }
         else
         {
-            std::cout << "Texture failed to load at path: " << path << std::endl;
+            std::cout << "Texture failed to load at path: " << filename << " Reason: " << stbi_failure_reason() << std::endl;
             stbi_image_free(data);
         }
 

@@ -28,6 +28,10 @@ private:
     glm::vec3 lightMin = glm::vec3(-0.1f, -0.1f, -0.1f);
     glm::vec3 lightMax = glm::vec3(0.1f, 0.1f, 0.1f);
     glm::vec3 lightPosition = glm::vec3(0.5f, 0.5f, 2.0f);
+
+    glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
+
+    SceneObject* camera;
 public:
     virtual void OnAttach();
     virtual void OnUpdate(float dt);

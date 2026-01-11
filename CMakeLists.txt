@@ -52,3 +52,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(Engine)
 add_subdirectory(Game)
+
+message(STATUS "======================================")
+message(STATUS " Building WildlifeGL Engine ")
+message(STATUS " Configuration: ${CMAKE_BUILD_TYPE}")
+message(STATUS " Compiler: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "======================================")

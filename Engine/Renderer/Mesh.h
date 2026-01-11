@@ -29,9 +29,10 @@ class Mesh {
 public:
     Mesh(float* vertices, unsigned int vertexCount, unsigned int* indices, unsigned int indexCount);
     Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
-    ~Mesh();
+    ~Mesh(){};
 
     void Draw() const;
+    void Destroy();
     void Draw(const Shader& shader) const;
 
     vector<Vertex>       vertices;

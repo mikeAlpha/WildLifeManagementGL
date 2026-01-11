@@ -1,6 +1,7 @@
 #pragma once
 
 class SceneObject;
+class Scene;
 
 class Component
 {
@@ -9,6 +10,7 @@ public:
 
     virtual void OnStart() {}
     virtual void OnUpdate(float dt) {}
+    virtual void OnUpdate(Scene& scene, float dt) {}
 
     SceneObject* GetOwner() const { return m_Owner; }
 

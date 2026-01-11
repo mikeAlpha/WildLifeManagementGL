@@ -9,6 +9,7 @@
 
 #include "Scene/Components/TransformComponent.h"
 #include "Scene/Components/RenderComponent.h"
+#include "Scene/Components/CameraComponent.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -67,18 +68,25 @@ void GameLayer::OnAttach()
 
     //cubeMesh = std::make_unique<Mesh>(cubeVertices, sizeof(cubeVertices) / sizeof(float), cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
     
-    testObj = std::make_unique<ModelLoader>("C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\resources\\backpack\\backpack.obj");
+    testObj = std::make_unique<ModelLoader>("C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\resources\\cat\\cat.obj");
 
     defaultShader = std::make_unique<Shader>("C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\shaders\\vertex.glsl", "C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\shaders\\fragment.glsl");
 
     mScene = std::make_unique<Scene>();
     
-    auto& obj = mScene->CreateObject();
+    // auto& obj_1 = mScene->CreateObject();
+    auto& obj_2 = mScene->CreateObject();
+    camera = &mScene->CreateObject();
+    auto& cam = camera->AddComponent<CameraComponent>();
+    cam.SetCamProp(45.0f, 1280.0f / 720.0f, 0.1f, 1000.0f, camera->GetComponent<TransformComponent>());
+    camera->GetComponent<TransformComponent>()->Position = camPos;
+    // auto& render_1 = obj_1.AddComponent<RenderComponent>();
+    // render_1.MeshPtr = cubeMesh.get();
+    // render_1.ShaderPtr = defaultShader.get();
 
-    auto& render = obj.AddComponent<RenderComponent>();
-    render.ModelPtr = testObj.get();
-    render.ShaderPtr = defaultShader.get();
-
+    auto& render_2 = obj_2.AddComponent<RenderComponent>();
+    render_2.ModelPtr = testObj.get();
+    render_2.ShaderPtr = defaultShader.get();
 }
 
 void GameLayer::OnUpdate(float dt)
@@ -86,18 +94,32 @@ void GameLayer::OnUpdate(float dt)
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0, -6));
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)1280 / (float)720, 0.1f, 100.0f);
+    glEnable(GL_DEPTH_TEST);
+
+    glm::mat4 view /*= glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0, -6.0f))*/;
+    glm::mat4 projection /*= glm::perspective(glm::radians(45.0f), (float)1280 / (float)720, 0.1f, 1000.0f)*/;
 
     glm::mat4 model, lightModel;
-    glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
+
+    if(camera->GetComponent<CameraComponent>())
+    {
+        auto* camComp = camera->GetComponent<CameraComponent>();
+        view = camComp->GetViewMatrix();
+        projection = camComp->GetProjectionMatrix();
+        camComp->OnUpdate(*mScene, dt);
+    }
 
     for(auto& obj : mScene->GetObjects())
     {
+        if(obj->GetComponent<CameraComponent>())
+            continue;
+
         auto* transform = obj->GetComponent<TransformComponent>();
         transform->Position = cubePosition;
-        transform->Rotation.y  += dt * 0.5f;
-        transform->Rotation.x  += dt * 0.5f;
+        //transform->Rotation.y  += dt * 0.5f;
+        //transform->Rotation.x  += dt * 0.5f;
+
+        //transform->Scale = glm::vec3(0.2f);
 
         auto* render = obj->GetComponent<RenderComponent>();
         render->ShaderPtr->SetVector3("lightPos", lightPosition.x, lightPosition.y, lightPosition.z);
@@ -105,6 +127,5 @@ void GameLayer::OnUpdate(float dt)
         render->ShaderPtr->SetVector3("viewPos", camPos.x, camPos.y,camPos.z);
         render->ShaderPtr->SetVector3("objectColor", 0.8, 0.1f, 0.0f);
     }
-
     mScene->Render(projection,view);
 }
