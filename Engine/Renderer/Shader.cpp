@@ -53,3 +53,8 @@ void Shader::SetVector3(const std::string& name, float x, float y, float z) cons
 {
 	glUniform3f(glGetUniformLocation(ID, name.c_str()),x,y,z);
 }
+
+void Shader::SetInt(const std::string& name, int value) const
+{
+	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+}

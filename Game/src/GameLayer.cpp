@@ -66,27 +66,40 @@ void GameLayer::OnAttach()
         20,21,22,22,23,20        // bottom
     };
 
-    //cubeMesh = std::make_unique<Mesh>(cubeVertices, sizeof(cubeVertices) / sizeof(float), cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
+    cubeMesh = std::make_unique<Mesh>(cubeVertices, sizeof(cubeVertices) / sizeof(float), cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
     
-    testObj = std::make_unique<ModelLoader>("C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\resources\\cat\\cat.obj");
+    testObj = std::make_unique<ModelLoader>("C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\resources\\backpack\\backpack.obj");
 
     defaultShader = std::make_unique<Shader>("C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\shaders\\vertex.glsl", "C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\shaders\\fragment.glsl");
 
+    lightShader = std::make_unique<Shader>("C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\shaders\\emitv.glsl", "C:\\WildlifeGL\\WildLifeManagementGL\\Game\\src\\shaders\\emitf.glsl");
+    
     mScene = std::make_unique<Scene>();
     
-    // auto& obj_1 = mScene->CreateObject();
+    auto& obj_1 = mScene->CreateObject();
     auto& obj_2 = mScene->CreateObject();
     camera = &mScene->CreateObject();
     auto& cam = camera->AddComponent<CameraComponent>();
     cam.SetCamProp(45.0f, 1280.0f / 720.0f, 0.1f, 1000.0f, camera->GetComponent<TransformComponent>());
     camera->GetComponent<TransformComponent>()->Position = camPos;
-    // auto& render_1 = obj_1.AddComponent<RenderComponent>();
-    // render_1.MeshPtr = cubeMesh.get();
-    // render_1.ShaderPtr = defaultShader.get();
+    
+    auto& render_1 = obj_1.AddComponent<RenderComponent>();
+    render_1.MeshPtr = cubeMesh.get();
+    render_1.ShaderPtr = lightShader.get();
 
     auto& render_2 = obj_2.AddComponent<RenderComponent>();
     render_2.ModelPtr = testObj.get();
     render_2.ShaderPtr = defaultShader.get();
+
+    render_2.ShaderPtr->use();
+    printf("Haas Texture?:%d\n", render_2.ModelPtr->hasTexture());
+    // if(render_2.ModelPtr->hasTexture())
+    // {
+    //     render_2.ShaderPtr->SetInt("hasTexture", 1);
+    render_2.ShaderPtr->SetInt("texture_diffuse1", 0);
+    // }
+    // else    
+    //     render_2.ShaderPtr->SetInt("hasTexture", 0);
 }
 
 void GameLayer::OnUpdate(float dt)
@@ -109,23 +122,36 @@ void GameLayer::OnUpdate(float dt)
         camComp->OnUpdate(*mScene, dt);
     }
 
+    
+
     for(auto& obj : mScene->GetObjects())
     {
+        if(obj->GetComponent<RenderComponent>())
+        {
+            auto* render = obj->GetComponent<RenderComponent>();
+            if(render->MeshPtr)
+            {
+                auto* transform = obj->GetComponent<TransformComponent>();
+                transform->Scale = glm::vec3(0.2f);
+                continue;
+            }
+        }
+
         if(obj->GetComponent<CameraComponent>())
             continue;
 
         auto* transform = obj->GetComponent<TransformComponent>();
         transform->Position = cubePosition;
-        //transform->Rotation.y  += dt * 0.5f;
-        //transform->Rotation.x  += dt * 0.5f;
+        transform->Rotation.y  += dt * 0.5f;
+        transform->Rotation.x  += dt * 0.5f;
 
         //transform->Scale = glm::vec3(0.2f);
 
         auto* render = obj->GetComponent<RenderComponent>();
         render->ShaderPtr->SetVector3("lightPos", lightPosition.x, lightPosition.y, lightPosition.z);
-        render->ShaderPtr->SetVector3("lightColor", 0.8, 0.5f, 0.1f);
+        render->ShaderPtr->SetVector3("lightColor", 1.0f, 1.0f, 1.0f);
         render->ShaderPtr->SetVector3("viewPos", camPos.x, camPos.y,camPos.z);
-        render->ShaderPtr->SetVector3("objectColor", 0.8, 0.1f, 0.0f);
     }
+
     mScene->Render(projection,view);
 }

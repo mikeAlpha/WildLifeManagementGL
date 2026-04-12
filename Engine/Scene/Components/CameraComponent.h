@@ -1,3 +1,4 @@
+#include "Platform/Window.h"
 #include "Scene/Scene.h"
 #include "Scene/Component.h"
 #include "Scene/Components/TransformComponent.h"
@@ -8,6 +9,8 @@
 
 #include <GLFW/glfw3.h>
 
+glm::vec3 front;
+glm::vec3 lastPosition;
 
 class CameraComponent : public Component
  {
@@ -28,25 +31,33 @@ class CameraComponent : public Component
             if (transform == nullptr)
                 continue;
 
-            float mouseDX = Input::GetMouseDX();
-            float mouseDY = Input::GetMouseDY();
+           if(Input::IsKeyPressed(GLFW_KEY_LEFT_ALT))
+           {    
+                Window::ToggleCursor(false);
 
-            yaw   += mouseDX * mouseSensitivity;
-            pitch += mouseDY * mouseSensitivity;
+                float mouseDX = Input::GetMouseDX();
+                float mouseDY = Input::GetMouseDY();
 
-            pitch = glm::clamp(pitch, -89.0f, 89.0f);
+                yaw   += mouseDX * mouseSensitivity;
+                pitch += mouseDY * mouseSensitivity;
 
-            if(Input::IsKeyPressed(GLFW_KEY_LEFT_SHIFT)){
-    
-                glm::vec3 front;
-                front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-                front.y = sin(glm::radians(pitch));
-                front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+                pitch = glm::clamp(pitch, -89.0f, 89.0f);
+
+                this->front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+                this->front.y = sin(glm::radians(pitch));
+                this->front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
                 this->front = glm::normalize(front);
+
+                float radius = glm::length(transform->Position);
+                if(radius == 0.0f) radius = 3.0f;
+                transform->Position = -this->front * radius;
 
                 this->right = glm::normalize(glm::cross(this->front, {0,1,0}));
                 this->up    = glm::normalize(glm::cross(this->right, this->front));
-
+            }
+            else
+            {
+                Window::ToggleCursor(true);
             }
 
             bool forward  = Input::IsKeyPressed(GLFW_KEY_W);
@@ -56,10 +67,10 @@ class CameraComponent : public Component
 
             float velocity = moveSpeed * dt;
 
-            if (forward)  transform->Position += front * velocity;
-            if (backward) transform->Position -= front * velocity;
-            if (left)     transform->Position -= right * velocity;
-            if (right)    transform->Position += right * velocity;
+            if (forward)  transform->Position += this->front * velocity;
+            if (backward) transform->Position -= this->front * velocity;
+            if (left)     transform->Position -= this->right * velocity;
+            if (right)    transform->Position += this->right * velocity;
         }
         Input::EndFrame();
      }
@@ -91,7 +102,7 @@ class CameraComponent : public Component
      glm::mat4 mView;
      glm::mat4 mProjection;
 
-     float moveSpeed = 15.0f;
+     float moveSpeed = 8.0f;
      float mouseSensitivity = 0.05f;
 
      glm::vec3 front  = { 0.0f, 0.0f, -1.0f };

@@ -10,9 +10,11 @@ public:
     void PollEvents();
     void SwapBuffers();
     bool IsWindowClosed();
+    static void ToggleCursor(bool enabled);
 
 private:
     int m_Width;
     int m_Height;
+
     std::string m_Title;
 };

@@ -9,6 +9,8 @@ uniform vec3 lightColor;
 uniform vec3 objectColor;
 uniform vec3 viewPos;
 
+uniform int hasTexture;
+
 in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
@@ -31,7 +33,10 @@ void main()
     float spec = pow(max(dot(reflectDir,viewDir),0.0),32);
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec4 texColor = texture(texture_diffuse1,TexCoords);
-    vec3 result = (ambient + diffuse + specular) * objectColor;
-    FragColor = vec4(result, 1.0);
+    // if(hasTexture != 0)
+    // {
+        vec4 texColor = texture(texture_diffuse1,TexCoords);
+        vec3 result = (ambient + diffuse + specular) * texColor.rgb;
+        FragColor = vec4(result, 1.0);
+    // }
 } 

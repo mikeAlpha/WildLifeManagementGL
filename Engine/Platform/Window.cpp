@@ -5,6 +5,10 @@
 
 GLFWwindow* window;
 
+static bool first = true;
+static double curX = 0.0, curY = 0.0;
+static double lastX = 0.0, lastY = 0.0;
+
 static void CursorPosCallback(GLFWwindow*, double xpos, double ypos);
 static void KeyCallback(GLFWwindow*, int key, int, int action, int);
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -26,6 +30,23 @@ Window::Window(int width, int height, const std::string& title)
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+}
+
+void Window::ToggleCursor(bool enabled)
+{
+    if (enabled)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        if(first)
+        {
+            glfwSetCursorPos(window, 0.0f, 0.0f);
+            first = false;
+        }
+    }
+    else
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
 }
 
 bool Window::IsWindowClosed()
@@ -53,9 +74,6 @@ static void KeyCallback(GLFWwindow*, int key, int, int action, int)
 
 static void CursorPosCallback(GLFWwindow*, double xpos, double ypos)
 {
-    static bool first = true;
-    static double lastX = 0.0, lastY = 0.0;
-
     if (first)
     {
         lastX = xpos;

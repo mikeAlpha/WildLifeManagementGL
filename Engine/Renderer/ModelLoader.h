@@ -55,6 +55,8 @@ public:
         for(unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
     }
+
+    bool hasTexture() const { return !textures_loaded.empty(); }
     
 private:
     void loadModel(string const &path)

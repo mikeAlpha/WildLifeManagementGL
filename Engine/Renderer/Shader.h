@@ -10,4 +10,5 @@ public:
 	void use() const;
 	void SetMatrix(const std::string& name, const glm::mat4& matrix) const;
 	void SetVector3(const std::string& name, float x, float y, float z) const;
+	void SetInt(const std::string& name, int value) const;
 };
